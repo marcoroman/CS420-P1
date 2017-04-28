@@ -20,10 +20,10 @@ public class BoardNode {
     public BoardNode(int[][] b){
         board = b;
         parent = null;
-        goalH2 = AStar.getGoalH2();
         g = 0;
 
         if(AStar.getH()) {
+            goalH2 = AStar.getGoalH2();
             setH2();
         }else{
             setH1();
@@ -39,6 +39,7 @@ public class BoardNode {
         g = parent.getG() + 1;
 
         if(AStar.getH()) {
+            goalH2 = AStar.getGoalH2();
             setH2();
         }else{
             setH1();
