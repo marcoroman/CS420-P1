@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.PriorityQueue;
+import java.util.*;
 
 /**
  * Created by marco on 4/19/2017.
@@ -21,6 +18,10 @@ public class AStar {
 
     //DETERMINES WHICH HEURISTIC WILL BE USED
     private static boolean selectH;
+    //USED TO CHECK IF GOAL STATE HAS BEEN REACHED
+    private final String GOAL_KEY = "012345678";
+    //USED TO RETURN THE SOLUTION PATH
+    private ArrayList<BoardNode> path = new ArrayList<>();
 
     //CONSTRUCTOR INSTANTIATES MANHATTAN DISTANCES IF BOOLEAN = TRUE AND SETS ROOT NODE FOR SEARCH
     //IF BOOLEAN IS FALSE, # OF MISPLACED TILES IS USED
@@ -66,28 +67,40 @@ public class AStar {
         //THE FOLLOWING CONDITIONS DETERMINE THE NEXT VALID STATES FOR THE CURRENT BOARD
         if(y < 2){
             moveRight(state, x, y);
-            BoardNode test = new BoardNode(state);
+            BoardNode test = new BoardNode(state, bn);
+
+            if(!explored.containsKey(makeKey(test.getBoard())))
+                frontier.add(test);
         }
 
         if(y > 0){
             state = copy(bn.getBoard());
 
             moveLeft(state, x, y);
-            BoardNode test = new BoardNode(state);
+            BoardNode test = new BoardNode(state, bn);
+
+            if(!explored.containsKey(makeKey(test.getBoard())))
+                frontier.add(test);
         }
 
         if(x < 2){
             state = copy(bn.getBoard());
 
             moveDown(state, x, y);
-            BoardNode test = new BoardNode(state);
+            BoardNode test = new BoardNode(state, bn);
+
+            if(!explored.containsKey(makeKey(test.getBoard())))
+                frontier.add(test);
         }
 
         if(x > 0){
             state = copy(bn.getBoard());
 
             moveUp(state, x, y);
-            BoardNode test = new BoardNode(state);
+            BoardNode test = new BoardNode(state, bn);
+
+            if(!explored.containsKey(makeKey(test.getBoard())))
+                frontier.add(test);
         }
     }
 
@@ -143,18 +156,39 @@ public class AStar {
         return copied;
     }
 
-    //BEGIN MAIN ALGORITHM LOOP HERE
-    /*
-    * 1. Initialize frontier with root node
-    * 2. While frontier is not empty
-    *       1) Assign first element of frontier to "N"
-    *       2) If N is goal, return SUCCESS (and path)
-    *       3) Remove N from frontier
-    *       4) Add children of N to frontier
-    *       5) Sort Q by f(n)
-    * 3. return FAILURE
-    * */
+    //MAIN ALGORITHM LOOP
     public void solve(){
-        getMoves(root);
+        frontier.add(root);
+
+        while(!frontier.isEmpty()){
+            if(makeKey(frontier.peek().getBoard()).equals(GOAL_KEY)){
+                BoardNode success = frontier.peek();
+
+                trace(success);
+                displaySolution();
+                break;
+            }else{
+                BoardNode temp = frontier.remove();
+                explored.put(makeKey(temp.getBoard()), temp.getBoard());
+                getMoves(temp);
+            }
+        }
+    }
+
+    public void trace(BoardNode n){
+        BoardNode step = n;
+
+        while(step != null){
+            path.add(step);
+            step = step.getParent();
+        }
+    }
+
+    public void displaySolution(){
+        Collections.reverse(path);
+
+        for(int i = 0; i < path.size(); ++i){
+            path.get(i).print();
+        }
     }
 }

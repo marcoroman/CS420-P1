@@ -13,7 +13,7 @@ public class Driver {
         puzzle.printPuzzle();
 
         if(puzzle.solvable()){
-            System.out.println("Board is solvable!");
+            System.out.println("\nPuzzle is solvable!");
 
             AStar alg = new AStar(puzzle.getPuzzle(), false);
             alg.solve();
