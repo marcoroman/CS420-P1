@@ -48,7 +48,6 @@ public class AStar {
     }
 
     //GENERATES CHILDREN OF GIVEN NODE
-    //MODIFY TO ADD CHILDREN NODES TO FRONTIER INSTEAD OF PRINTING
     public void getMoves(BoardNode bn){
         int x = 0, y = 0;
         int[][] state = new int[3][3];

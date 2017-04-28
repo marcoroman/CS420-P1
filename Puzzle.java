@@ -9,6 +9,7 @@ public class Puzzle {
                       {-1, -1, -1},
                       {-1, -1, -1}};
 
+    //CONSTRUCTOR FOR A RANDOMLY GENERATED PUZZLE
     public Puzzle(){
         Random gen = new Random();
 
@@ -25,6 +26,7 @@ public class Puzzle {
         }
     }
 
+    //CONSTRUCTOR FOR USER CONSTRUCTED PUZZLE
     public Puzzle(Scanner reader){
         int value = -1;
 
@@ -45,6 +47,7 @@ public class Puzzle {
         }
     }
 
+    //USED TO PREVENT DUPLICATE VALUES IN PUZZLE
     public static boolean contains(int n, int[][] values){
         for(int i = 0; i < 3; ++i){
             for(int j = 0; j < 3; ++j){
@@ -56,6 +59,7 @@ public class Puzzle {
         return false;
     }
 
+    //DETERMINES WHETHER THE PUZZLE IS SOLVABLE
     public boolean solvable(){
         int N = 0;
 
@@ -71,6 +75,7 @@ public class Puzzle {
             return false;
     }
 
+    //AUXILIARY METHOD USED TO COUNT HOW MANY TILES ARE OUT OF ORDER
     public int compare(int value, int x, int y){
         int count = 0, i = 2, j = 2;
 
