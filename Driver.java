@@ -15,7 +15,7 @@ public class Driver {
         if(puzzle.solvable()){
             System.out.println("Board is solvable!");
 
-            AStar alg = new AStar(puzzle.getPuzzle());
+            AStar alg = new AStar(puzzle.getPuzzle(), false);
             alg.solve();
         }else{
             System.out.println("Puzzle is not solvable.");

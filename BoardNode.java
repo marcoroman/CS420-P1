@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class BoardNode {
     private BoardNode parent;
     private int[][] board = new int[3][3];
-    private int g, h1 = 0, h2 = 0, f = 0;
+    private int g, h = 0, f = 0;
 
     private int[][] goalH1 = {{0 ,1, 2},
                               {3, 4, 5},
@@ -23,9 +23,13 @@ public class BoardNode {
         goalH2 = AStar.getGoalH2();
         g = 0;
 
-        setH1();
+        if(AStar.getH()) {
+            setH2();
+        }else{
+            setH1();
+        }
 
-        f = g + h1;
+        f = g + h;
     }
 
     //CONSTRUCTOR FOR CHILD NODES
@@ -34,9 +38,13 @@ public class BoardNode {
         parent = p;
         g = parent.getG() + 1;
 
-        setH1();
+        if(AStar.getH()) {
+            setH2();
+        }else{
+            setH1();
+        }
 
-        f = g + h1;
+        f = g + h;
     }
 
     //*******************************MUTATORS***********************************
@@ -50,7 +58,7 @@ public class BoardNode {
         for(int i = 0; i < 3; ++i){
             for(int j = 0; j < 3; ++j){
                 if(board[i][j] != goalH1[i][j] && board[i][j] != 0)
-                    ++h1;
+                    ++h;
             }
         }
     }
@@ -60,7 +68,7 @@ public class BoardNode {
         for(int i = 0; i < 3; ++i){
             for(int j = 0; j < 3; ++j){
                 if(board[i][j] != 0)
-                    h2 += Math.abs(goalH2.get(board[i][j])[0] - i) + Math.abs(goalH2.get(board[i][j])[1] - j);
+                    h += Math.abs(goalH2.get(board[i][j])[0] - i) + Math.abs(goalH2.get(board[i][j])[1] - j);
             }
         }
     }
@@ -76,14 +84,10 @@ public class BoardNode {
     }
 
     //RETURNING VALUE OF FIRST HEURISTIC FUNCTION H1(N)
-    public int getH1(){
-        return h1;
+    public int getH(){
+        return h;
     }
 
-    //RETURNING VALUE OF SECOND HEURISTIC FUNCTION H2(n)
-    public int getH2(){
-        return h2;
-    }
 
     //TO BE ACCESSED BY CHILDREN NODES TO KEEP TRACK OF G(N)
     public int getG(){return g;}

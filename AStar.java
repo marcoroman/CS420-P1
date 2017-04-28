@@ -19,21 +19,35 @@ public class AStar {
     //PASSED INTO BOARD NODE OBJECT FOR CALCULATION OF H2
     static ArrayList<int[]> goalH2 = new ArrayList<>();
 
-    //CONSTRUCTOR INSTANTIATES MANHATTAN DISTANCES AND SETS ROOT NODE FOR SEARCH
-    public AStar(int[][] a){
+    //DETERMINES WHICH HEURISTIC WILL BE USED
+    private static boolean selectH;
 
-        for(int i = 0; i < 3; ++i){
-            for(int j = 0; j < 3; ++j){
-                int[] arr = new int[2];
-                arr[0] = i; arr[1] = j;
-                goalH2.add(arr);
+    //CONSTRUCTOR INSTANTIATES MANHATTAN DISTANCES IF BOOLEAN = TRUE AND SETS ROOT NODE FOR SEARCH
+    //IF BOOLEAN IS FALSE, # OF MISPLACED TILES IS USED
+    public AStar(int[][] a, boolean b){
+
+        selectH = b;
+
+        if(selectH) {
+            for (int i = 0; i < 3; ++i) {
+                for (int j = 0; j < 3; ++j) {
+                    int[] arr = new int[2];
+                    arr[0] = i;
+                    arr[1] = j;
+                    goalH2.add(arr);
+                }
             }
         }
 
         root = new BoardNode(a);
     }
 
+    public static boolean getH(){
+        return selectH;
+    }
+
     //GENERATES CHILDREN OF GIVEN NODE
+    //MODIFY TO ADD CHILDREN NODES TO FRONTIER INSTEAD OF PRINTING
     public void getMoves(BoardNode bn){
         int x = 0, y = 0;
         int[][] state = new int[3][3];
@@ -53,8 +67,6 @@ public class AStar {
         if(y < 2){
             moveRight(state, x, y);
             BoardNode test = new BoardNode(state);
-            test.print();
-            System.out.println("H2 = " + test.getH2());
         }
 
         if(y > 0){
@@ -62,8 +74,6 @@ public class AStar {
 
             moveLeft(state, x, y);
             BoardNode test = new BoardNode(state);
-            test.print();
-            System.out.println("H2 = " + test.getH2());
         }
 
         if(x < 2){
@@ -71,8 +81,6 @@ public class AStar {
 
             moveDown(state, x, y);
             BoardNode test = new BoardNode(state);
-            test.print();
-            System.out.println("H2 = " + test.getH2());
         }
 
         if(x > 0){
@@ -80,8 +88,6 @@ public class AStar {
 
             moveUp(state, x, y);
             BoardNode test = new BoardNode(state);
-            test.print();
-            System.out.println("H2 = " + test.getH2());
         }
     }
 
@@ -149,7 +155,6 @@ public class AStar {
     * 3. return FAILURE
     * */
     public void solve(){
-
         getMoves(root);
     }
 }
