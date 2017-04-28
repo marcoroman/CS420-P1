@@ -7,7 +7,7 @@ import java.util.Arrays;
 public class BoardNode {
     private BoardNode parent;
     private int[][] board = new int[3][3];
-    private int g = 0, h1 = 0, h2 = 0;
+    private int g, h1 = 0, h2 = 0, f = 0;
 
     private int[][] goalH1 = {{0 ,1, 2},
                               {3, 4, 5},
@@ -22,14 +22,22 @@ public class BoardNode {
         board = b;
         parent = null;
         goalH2 = AStar.getGoalH2();
+        g = 0;
 
-        setH2();
+        setH1();
+
+        f = g + h1;
     }
 
     //CONSTRUCTOR FOR CHILD NODES
     public BoardNode(int[][] b, BoardNode p){
         board = b;
         parent = p;
+        g = parent.getG() + 1;
+
+        setH1();
+
+        f = g + h1;
     }
 
     //*******************************MUTATORS***********************************
@@ -68,13 +76,21 @@ public class BoardNode {
         return parent;
     }
 
+    //RETURNING VALUE OF FIRST HEURISTIC FUNCTION H1(N)
     public int getH1(){
         return h1;
     }
 
+    //RETURNING VALUE OF SECOND HEURISTIC FUNCTION H2(n)
     public int getH2(){
         return h2;
     }
+
+    //TO BE ACCESSED BY CHILDREN NODES TO KEEP TRACK OF G(N)
+    public int getG(){return g;}
+
+    //RETURNS F(N) = G(N) + H1(N) | H2(N)
+    public int getF(){return f;}
 
     public void print(){
         System.out.println();

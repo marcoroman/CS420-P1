@@ -135,6 +135,16 @@ public class AStar {
     }
 
     //BEGIN MAIN ALGORITHM LOOP HERE
+    /*
+    * 1. Initialize frontier with root node
+    * 2. While frontier is not empty
+    *       1) Assign first element of frontier to "N"
+    *       2) If N is goal, return SUCCESS (and path)
+    *       3) Remove N from frontier
+    *       4) Add children of N to frontier
+    *       5) Sort Q by f(n)
+    * 3. return FAILURE
+    * */
     public void solve(){
 
         getMoves(root);
