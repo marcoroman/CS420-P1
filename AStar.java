@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
@@ -9,8 +10,10 @@ public class AStar {
 
     BoardNode root;
 
+    //THE COMPARATOR CLASS ALLOWS THE PRIORITY QUEUE TO SORT BOARD NODES BY THEIR EVALUATION FUNCTIONS
     //FRONTIER HOLDS NODES THAT CAN BE EXPLORED, EXPLORED HASHMAP HOLDS NODES THAT HAVE BEEN EXPANDED
-    PriorityQueue<BoardNode> frontier = new PriorityQueue<>();
+    Comparator<BoardNode> fCompare = new functionCompare();
+    PriorityQueue<BoardNode> frontier = new PriorityQueue<>(fCompare);
     HashMap<String, int[][]> explored = new HashMap<>();
 
     //PASSED INTO BOARD NODE OBJECT FOR CALCULATION OF H2
