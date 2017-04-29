@@ -4,6 +4,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Driver {
@@ -51,9 +52,11 @@ public class Driver {
                 if(op == 1){
                     AStar alg = new AStar(puzzle.getPuzzle(), false);
                     alg.solve();
+                    System.out.println(alg.getTreeSize());
                 }else if(op == 2){
                     AStar alg = new AStar(puzzle.getPuzzle(), true);
                     alg.solve();
+                    System.out.println(alg.getTreeSize());
                 }else if(op == 3){
                     break;
                 }else{
@@ -71,29 +74,35 @@ public class Driver {
         File file = new File("cases.txt");
         Scanner r = new Scanner(file);
         String line;
-        int size = 0;
+        int[] sizesH1 = new int[10];
+        int[] sizesH2 = new int[10];
 
         //SEPARATE ARRAY LISTS STORE THE DIFFERENT HEURISTIC SOLUTIONS
-        ArrayList<AStar> h1_Cases = new ArrayList<>();
-        ArrayList<AStar> h2_Cases = new ArrayList<>();
+        ArrayList<int[][]> h1_Cases = new ArrayList<>();
+        ArrayList<int[][]> h2_Cases = new ArrayList<>();
 
         while(r.hasNextLine()){
 
             line = r.nextLine();
 
             if(line.matches("^[0-8]{9}$")){
-                h1_Cases.add(new AStar(convert(line), false));
-                h2_Cases.add(new AStar(convert(line), true));
+                h1_Cases.add(convert(line));
+                h2_Cases.add(convert(line));
             }
         }
 
         //SOLVING 100 TEST CASES AT DEPTH D = 2
-        for(int i = 0; i < 100; ++i){
-            h1_Cases.get(i).solveTest();
-            size += h1_Cases.get(i).getTreeSize();
+        for(int i = 0; i < 1000; ++i){
+            AStar a = new AStar(h1_Cases.get(i), false);
+            a.solveTest();
+            sizesH1[i / 100] += a.getTreeSize();
+            AStar a2 = new AStar(h2_Cases.get(i), true);
+            a2.solveTest();
+            sizesH2[i / 100] += a2.getTreeSize();
         }
 
-        System.out.println("Average tree size: " + size / 100);
+        System.out.println(Arrays.toString(sizesH1));
+        System.out.println(Arrays.toString(sizesH2));
     }
 
     //CREATES A 2D ARRAY FROM A STRING OF NUMBERS

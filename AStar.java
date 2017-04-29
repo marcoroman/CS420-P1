@@ -171,6 +171,8 @@ public class AStar {
 
     //MAIN A* ALGORITHM LOOP
     public void solve(){
+        treeSize = 0;
+
         frontier.add(root);
         ++treeSize;
 
