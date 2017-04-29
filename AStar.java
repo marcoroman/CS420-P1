@@ -9,25 +9,26 @@ public class AStar {
 
     //THE COMPARATOR CLASS ALLOWS THE PRIORITY QUEUE TO SORT BOARD NODES BY THEIR EVALUATION FUNCTIONS
     //FRONTIER HOLDS NODES THAT CAN BE EXPLORED, EXPLORED HASHMAP HOLDS NODES THAT HAVE BEEN EXPANDED
+    //GOALH2 IS PASSED INTO BOARD NODE OBJECT FOR CALCULATION OF H2
+    //SELECTH DETERMINES WHICH HEURISTIC WILL BE USED
+    //GOAL_KEY IS USED TO CHECK IF GOAL STATE HAS BEEN REACHED
+    //PATH IS USED TO RETURN THE SOLUTION PATH
+
     Comparator<BoardNode> fCompare = new functionCompare();
     PriorityQueue<BoardNode> frontier = new PriorityQueue<>(fCompare);
     HashMap<String, int[][]> explored = new HashMap<>();
-
-    //PASSED INTO BOARD NODE OBJECT FOR CALCULATION OF H2
     static ArrayList<int[]> goalH2 = new ArrayList<>();
-
-    //DETERMINES WHICH HEURISTIC WILL BE USED
     private static boolean selectH;
-    //USED TO CHECK IF GOAL STATE HAS BEEN REACHED
     private final String GOAL_KEY = "012345678";
-    //USED TO RETURN THE SOLUTION PATH
     private ArrayList<BoardNode> path = new ArrayList<>();
+    private static int treeSize;
 
     //CONSTRUCTOR INSTANTIATES MANHATTAN DISTANCES IF BOOLEAN = TRUE AND SETS ROOT NODE FOR SEARCH
     //IF BOOLEAN IS FALSE, # OF MISPLACED TILES IS USED
     public AStar(int[][] a, boolean b){
 
         selectH = b;
+        treeSize = 0;
 
         if(selectH) {
             for (int i = 0; i < 3; ++i) {
@@ -68,8 +69,10 @@ public class AStar {
             moveRight(state, x, y);
             BoardNode test = new BoardNode(state, bn);
 
-            if(!explored.containsKey(makeKey(test.getBoard())))
+            if(!explored.containsKey(makeKey(test.getBoard()))) {
                 frontier.add(test);
+                ++treeSize;
+            }
         }
 
         if(y > 0){
@@ -78,8 +81,10 @@ public class AStar {
             moveLeft(state, x, y);
             BoardNode test = new BoardNode(state, bn);
 
-            if(!explored.containsKey(makeKey(test.getBoard())))
+            if(!explored.containsKey(makeKey(test.getBoard()))) {
                 frontier.add(test);
+                ++treeSize;
+            }
         }
 
         if(x < 2){
@@ -88,8 +93,10 @@ public class AStar {
             moveDown(state, x, y);
             BoardNode test = new BoardNode(state, bn);
 
-            if(!explored.containsKey(makeKey(test.getBoard())))
+            if(!explored.containsKey(makeKey(test.getBoard()))) {
                 frontier.add(test);
+                ++treeSize;
+            }
         }
 
         if(x > 0){
@@ -98,8 +105,10 @@ public class AStar {
             moveUp(state, x, y);
             BoardNode test = new BoardNode(state, bn);
 
-            if(!explored.containsKey(makeKey(test.getBoard())))
+            if(!explored.containsKey(makeKey(test.getBoard()))) {
                 frontier.add(test);
+                ++treeSize;
+            }
         }
     }
 
@@ -155,9 +164,15 @@ public class AStar {
         return copied;
     }
 
-    //MAIN ALGORITHM LOOP
+    //RETURNS SIZE OF THE SEARCH TREE
+    public int getTreeSize(){
+        return treeSize;
+    }
+
+    //MAIN A* ALGORITHM LOOP
     public void solve(){
         frontier.add(root);
+        ++treeSize;
 
         while(!frontier.isEmpty()){
             if(makeKey(frontier.peek().getBoard()).equals(GOAL_KEY)){
@@ -174,6 +189,27 @@ public class AStar {
         }
     }
 
+    //A* USED FOR TEST CASES; DOES NOT TRACE PATH OR DISPLAY SOLUTIONS
+    //MODIFY TO KEEP TRACK OF REQUIRED VARIABLES FOR COMPARISONS
+    public void solveTest(){
+        treeSize = 0;
+
+        frontier.add(root);
+        ++treeSize;
+
+        while(!frontier.isEmpty()){
+            if(makeKey(frontier.peek().getBoard()).equals(GOAL_KEY)){
+                BoardNode success = frontier.peek();
+                break;
+            }else{
+                BoardNode temp = frontier.remove();
+                explored.put(makeKey(temp.getBoard()), temp.getBoard());
+                getMoves(temp);
+            }
+        }
+    }
+
+    //TRACES THE ANCESTRY OF THE GOAL NODE AND STORES THIS PATH IN AN ARRAY LIST
     public void trace(BoardNode n){
         BoardNode step = n;
 
@@ -183,6 +219,7 @@ public class AStar {
         }
     }
 
+    //ITERATES THROUGH THE SOLUTION PATH TO PRINT EACH BOARD CONFIGURATION
     public void displaySolution(){
         Collections.reverse(path);
 

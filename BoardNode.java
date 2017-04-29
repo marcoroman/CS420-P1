@@ -106,7 +106,5 @@ public class BoardNode {
 
             System.out.println();
         }
-
-        System.out.println();
     }
 }
