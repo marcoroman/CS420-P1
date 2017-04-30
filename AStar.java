@@ -19,33 +19,35 @@ public class AStar {
     private HashSet<String> explored = new HashSet<>();
     static ArrayList<int[]> goalH2 = new ArrayList<>();
     private static boolean selectH;
+    private static boolean testing;
     private final String GOAL_KEY = "012345678";
     private ArrayList<BoardNode> path = new ArrayList<>();
     private static int treeSize;
+    private static long time;
 
     //CONSTRUCTOR INSTANTIATES MANHATTAN DISTANCES IF BOOLEAN = TRUE AND SETS ROOT NODE FOR SEARCH
     //IF BOOLEAN IS FALSE, # OF MISPLACED TILES IS USED
-    public AStar(int[][] a, boolean b){
+    public AStar(int[][] a){
 
-        selectH = b;
+        selectH = false;
+        testing = false;
         treeSize = 0;
-
-        if(selectH) {
-            for (int i = 0; i < 3; ++i) {
-                for (int j = 0; j < 3; ++j) {
-                    int[] arr = new int[2];
-                    arr[0] = i;
-                    arr[1] = j;
-                    goalH2.add(arr);
-                }
-            }
-        }
 
         root = new BoardNode(a);
     }
 
+    public void isTesting(boolean b){testing = b;}
+
+    public void setH(boolean b){
+        selectH = b;
+    }
+
     public static boolean getH(){
         return selectH;
+    }
+
+    public static long getTime(){
+        return time;
     }
 
     //GENERATES CHILDREN OF GIVEN NODE
@@ -133,7 +135,7 @@ public class AStar {
         arr[x][y + 1] = 0;
     }
 
-    //CREATING THE KEY FOR STORING SEQUENCE OF 2D ARRAY IN HASHMAP
+    //CREATING THE KEY FOR STORING SEQUENCE OF 2D ARRAY IN HASHSET
     private static String makeKey(int[][] arr){
         String str = "";
 
@@ -171,42 +173,40 @@ public class AStar {
 
     //MAIN A* ALGORITHM LOOP
     public void solve(){
-        treeSize = 0;
+        reset();
 
         frontier.add(root);
         ++treeSize;
 
-        while(!frontier.isEmpty()){
-            if(makeKey(frontier.peek().getBoard()).equals(GOAL_KEY)){
-                BoardNode success = frontier.peek();
-
-                trace(success);
-                displaySolution();
-                break;
-            }else{
-                BoardNode temp = frontier.remove();
-                //explored.put(makeKey(temp.getBoard()), temp.getBoard());
-                explored.add(makeKey(temp.getBoard()));
-                getMoves(temp);
+        //INITIALIZES GOAL POSITIONS FOR NUMBERS ONLY IN THE CASE OF THE SECOND HEURISTIC
+        if(selectH) {
+            for (int i = 0; i < 3; ++i) {
+                for (int j = 0; j < 3; ++j) {
+                    int[] arr = new int[2];
+                    arr[0] = i;
+                    arr[1] = j;
+                    goalH2.add(arr);
+                }
             }
         }
-    }
 
-    //A* USED FOR TEST CASES; DOES NOT TRACE PATH OR DISPLAY SOLUTIONS
-    //MODIFY TO KEEP TRACK OF REQUIRED VARIABLES FOR COMPARISONS
-    public void solveTest(){
-        treeSize = 0;
+        long start = System.currentTimeMillis();
 
-        frontier.add(root);
-        ++treeSize;
-
+        //A* SEARCH
         while(!frontier.isEmpty()){
             if(makeKey(frontier.peek().getBoard()).equals(GOAL_KEY)){
                 BoardNode success = frontier.peek();
+
+                long stop = System.currentTimeMillis();
+                time  = stop - start;
+
+                if(!testing) {
+                    trace(success);
+                    displaySolution();
+                }
                 break;
             }else{
                 BoardNode temp = frontier.remove();
-                //explored.put(makeKey(temp.getBoard()), temp.getBoard());
                 explored.add(makeKey(temp.getBoard()));
                 getMoves(temp);
             }
@@ -230,5 +230,13 @@ public class AStar {
         for(int i = 0; i < path.size(); ++i){
             path.get(i).print();
         }
+    }
+
+    //CLEARING ALL FIELDS TO ALLOW FOR REPEATING ALGORITHM
+    private void reset(){
+        treeSize = 0;
+        frontier.clear();
+        explored.clear();
+        path.clear();
     }
 }

@@ -43,6 +43,7 @@ public class Driver {
 
         if(puzzle.solvable()){
             System.out.println("\nPuzzle is solvable!");
+            AStar alg = new AStar(puzzle.getPuzzle());
 
             while(op != 3){
                 System.out.print("\n1) Solve using h1(n) = number of misplaced tiles" +
@@ -50,11 +51,13 @@ public class Driver {
                 op = r.nextInt();
 
                 if(op == 1){
-                    AStar alg = new AStar(puzzle.getPuzzle(), false);
+                    alg.setH(false);
                     alg.solve();
+                    System.out.println(alg.getTreeSize());
                 }else if(op == 2){
-                    AStar alg = new AStar(puzzle.getPuzzle(), true);
+                    alg.setH(true);
                     alg.solve();
+                    System.out.println(alg.getTreeSize());
                 }else if(op == 3){
                     break;
                 }else{
@@ -77,41 +80,35 @@ public class Driver {
         long[] timeH1 = new long[10];
         long[] timeH2 = new long[10];
 
-        //SEPARATE ARRAY LISTS STORE THE DIFFERENT HEURISTIC SOLUTIONS
-        ArrayList<int[][]> h1_Cases = new ArrayList<>();
-        ArrayList<int[][]> h2_Cases = new ArrayList<>();
+        //ARRAY LIST STORES 2D ARRAYS FROM FILE THAT WILL BE USED TO CREATE
+        //NEW ASTAR OBJECTS
+        ArrayList<int[][]> cases = new ArrayList<>();
 
         while(r.hasNextLine()){
 
             line = r.nextLine();
 
             if(line.matches("^[0-8]{9}$")){
-                h1_Cases.add(convert(line));
-                h2_Cases.add(convert(line));
+                cases.add(convert(line));
             }
         }
 
-        long start = 0, stop = 0;
-
         //SOLVING 200 TEST CASES AT DEPTHS 2 - 20 (EVEN INTERVALS)
         for(int i = 0; i < 2000; ++i){
-            AStar a = new AStar(h1_Cases.get(i), false);
+            AStar a = new AStar(cases.get(i));
+            a.isTesting(true);
 
-            start = System.currentTimeMillis();
-            a.solveTest();
-            stop = System.currentTimeMillis();
-
+            //TESTING BY THE FIRST HEURISTIC
+            a.solve();
             sizesH1[i / 200] += a.getTreeSize();
-            timeH1[i / 200] += stop - start;
+            timeH1[i / 200] += a.getTime();
 
-            AStar a2 = new AStar(h2_Cases.get(i), true);
+            //SWITCHING OVER TO THE SECOND HEURISTIC
+            a.setH(true);
 
-            start = System.currentTimeMillis();
-            a2.solveTest();
-            stop = System.currentTimeMillis();
-
-            sizesH2[i / 200] += a2.getTreeSize();
-            timeH2[i / 200] += stop - start;
+            a.solve();
+            sizesH2[i / 200] += a.getTreeSize();
+            timeH2[i / 200] += a.getTime();
         }
 
         for(int i = 0; i < sizesH1.length; ++i){
