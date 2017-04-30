@@ -5,8 +5,6 @@ import java.util.*;
  */
 public class AStar {
 
-    BoardNode root;
-
     //THE COMPARATOR CLASS ALLOWS THE PRIORITY QUEUE TO SORT BOARD NODES BY THEIR EVALUATION FUNCTIONS
     //FRONTIER HOLDS NODES THAT CAN BE EXPLORED, EXPLORED HASHSET HOLDS NODES THAT HAVE BEEN EXPANDED
     //GOALH2 IS PASSED INTO BOARD NODE OBJECT FOR CALCULATION OF H2
@@ -14,6 +12,7 @@ public class AStar {
     //GOAL_KEY IS USED TO CHECK IF GOAL STATE HAS BEEN REACHED
     //PATH IS USED TO RETURN THE SOLUTION PATH
 
+    private BoardNode root;
     private Comparator<BoardNode> fCompare = new functionCompare();
     private PriorityQueue<BoardNode> frontier = new PriorityQueue<>(fCompare);
     private HashSet<String> explored = new HashSet<>();
@@ -36,18 +35,79 @@ public class AStar {
         root = new BoardNode(a);
     }
 
+    //************************************MUTATORS & ACCESSORS************************************
+
+    //BOOLEAN VALUE THAT ACTS AS A SWITCH TO INDICATE WHETHER TEST CASES ARE BEING RUN
     public void isTesting(boolean b){testing = b;}
 
+    //BOOLEAN VALUE THAT ACTS AS A SWITCH TO INDICATE WHICH HEURISTIC IS BEING USED
+    //FALSE = H1, TRUE = H2
     public void setH(boolean b){
         selectH = b;
     }
 
+    //ACCESSED BY BOARDNODE TO DETERMINE WHICH HEURISTIC TO USE
     public static boolean getH(){
         return selectH;
     }
 
+    //RETURNS EXECUTION TIME OF A* SEARCH (FOR TESTING)
     public static long getTime(){
         return time;
+    }
+
+    //RETURNS SIZE OF THE SEARCH TREE
+    public int getTreeSize(){
+        return treeSize;
+    }
+
+    //USED BY BOARD NODE CLASS TO CALCULATE MANHATTAN DISTANCES FOR EACH NODE
+    public static ArrayList<int[]> getGoalH2() {
+        return goalH2;
+    }
+
+    //************************************A* METHODS************************************
+
+    //MAIN A* ALGORITHM LOOP
+    public void solve(){
+        reset();
+
+        frontier.add(root);
+        ++treeSize;
+
+        //INITIALIZES GOAL POSITIONS FOR NUMBERS ONLY IN THE CASE OF THE SECOND HEURISTIC
+        if(selectH) {
+            for (int i = 0; i < 3; ++i) {
+                for (int j = 0; j < 3; ++j) {
+                    int[] arr = new int[2];
+                    arr[0] = i;
+                    arr[1] = j;
+                    goalH2.add(arr);
+                }
+            }
+        }
+
+        long start = System.currentTimeMillis();
+
+        //A* SEARCH
+        while(!frontier.isEmpty()){
+            if(makeKey(frontier.peek().getBoard()).equals(GOAL_KEY)){
+                BoardNode success = frontier.peek();
+
+                long stop = System.currentTimeMillis();
+                time  = stop - start;
+
+                if(!testing) {
+                    trace(success);
+                    displaySolution();
+                }
+                break;
+            }else{
+                BoardNode temp = frontier.remove();
+                explored.add(makeKey(temp.getBoard()));
+                getMoves(temp);
+            }
+        }
     }
 
     //GENERATES CHILDREN OF GIVEN NODE
@@ -135,6 +195,8 @@ public class AStar {
         arr[x][y + 1] = 0;
     }
 
+    //************************************AUXILIARY METHODS************************************
+
     //CREATING THE KEY FOR STORING SEQUENCE OF 2D ARRAY IN HASHSET
     private static String makeKey(int[][] arr){
         String str = "";
@@ -148,11 +210,6 @@ public class AStar {
         return str;
     }
 
-    //USED BY BOARD NODE CLASS TO CALCULATE MANHATTAN DISTANCES FOR EACH NODE
-    public static ArrayList<int[]> getGoalH2() {
-        return goalH2;
-    }
-
     //AUXILIARY METHOD FOR CREATING A COPY OF THE BOARD
     private int[][] copy(int[][] arr){
         int[][] copied = new int[3][3];
@@ -164,53 +221,6 @@ public class AStar {
         }
 
         return copied;
-    }
-
-    //RETURNS SIZE OF THE SEARCH TREE
-    public int getTreeSize(){
-        return treeSize;
-    }
-
-    //MAIN A* ALGORITHM LOOP
-    public void solve(){
-        reset();
-
-        frontier.add(root);
-        ++treeSize;
-
-        //INITIALIZES GOAL POSITIONS FOR NUMBERS ONLY IN THE CASE OF THE SECOND HEURISTIC
-        if(selectH) {
-            for (int i = 0; i < 3; ++i) {
-                for (int j = 0; j < 3; ++j) {
-                    int[] arr = new int[2];
-                    arr[0] = i;
-                    arr[1] = j;
-                    goalH2.add(arr);
-                }
-            }
-        }
-
-        long start = System.currentTimeMillis();
-
-        //A* SEARCH
-        while(!frontier.isEmpty()){
-            if(makeKey(frontier.peek().getBoard()).equals(GOAL_KEY)){
-                BoardNode success = frontier.peek();
-
-                long stop = System.currentTimeMillis();
-                time  = stop - start;
-
-                if(!testing) {
-                    trace(success);
-                    displaySolution();
-                }
-                break;
-            }else{
-                BoardNode temp = frontier.remove();
-                explored.add(makeKey(temp.getBoard()));
-                getMoves(temp);
-            }
-        }
     }
 
     //TRACES THE ANCESTRY OF THE GOAL NODE AND STORES THIS PATH IN AN ARRAY LIST

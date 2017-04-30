@@ -15,6 +15,7 @@ public class Driver {
 
         Puzzle puzzle = null;
 
+        //ALLOWS THE USER TO CREATE A PUZZLE RANDOMLY OR MANUALLY THEN CHECKS IF IT IS SOLVABLE
         while(option != 4){
             System.out.print("\n8-Puzzle Solver\n1) Randomly generate puzzle\n2) Manually create puzzle\n3) Run test cases\n4) Exit\n>");
             option = reader.nextInt();
@@ -37,6 +38,7 @@ public class Driver {
         reader.close();
     }
 
+    //ALLOWS THE USER TO SOLVE THE PUZZLE WITH THE HEURISTIC OF THEIR CHOOSING
     public static void subMenu(Puzzle puzzle, Scanner r){
         puzzle.printPuzzle();
         int op = -1;
@@ -53,11 +55,9 @@ public class Driver {
                 if(op == 1){
                     alg.setH(false);
                     alg.solve();
-                    System.out.println(alg.getTreeSize());
                 }else if(op == 2){
                     alg.setH(true);
                     alg.solve();
-                    System.out.println(alg.getTreeSize());
                 }else if(op == 3){
                     break;
                 }else{
