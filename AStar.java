@@ -8,15 +8,15 @@ public class AStar {
     BoardNode root;
 
     //THE COMPARATOR CLASS ALLOWS THE PRIORITY QUEUE TO SORT BOARD NODES BY THEIR EVALUATION FUNCTIONS
-    //FRONTIER HOLDS NODES THAT CAN BE EXPLORED, EXPLORED HASHMAP HOLDS NODES THAT HAVE BEEN EXPANDED
+    //FRONTIER HOLDS NODES THAT CAN BE EXPLORED, EXPLORED HASHSET HOLDS NODES THAT HAVE BEEN EXPANDED
     //GOALH2 IS PASSED INTO BOARD NODE OBJECT FOR CALCULATION OF H2
     //SELECTH DETERMINES WHICH HEURISTIC WILL BE USED
     //GOAL_KEY IS USED TO CHECK IF GOAL STATE HAS BEEN REACHED
     //PATH IS USED TO RETURN THE SOLUTION PATH
 
-    Comparator<BoardNode> fCompare = new functionCompare();
-    PriorityQueue<BoardNode> frontier = new PriorityQueue<>(fCompare);
-    HashMap<String, int[][]> explored = new HashMap<>();
+    private Comparator<BoardNode> fCompare = new functionCompare();
+    private PriorityQueue<BoardNode> frontier = new PriorityQueue<>(fCompare);
+    private HashSet<String> explored = new HashSet<>();
     static ArrayList<int[]> goalH2 = new ArrayList<>();
     private static boolean selectH;
     private final String GOAL_KEY = "012345678";
@@ -49,7 +49,7 @@ public class AStar {
     }
 
     //GENERATES CHILDREN OF GIVEN NODE
-    public void getMoves(BoardNode bn){
+    private void getMoves(BoardNode bn){
         int x = 0, y = 0;
         int[][] state = new int[3][3];
 
@@ -69,7 +69,7 @@ public class AStar {
             moveRight(state, x, y);
             BoardNode test = new BoardNode(state, bn);
 
-            if(!explored.containsKey(makeKey(test.getBoard()))) {
+            if(!explored.contains(makeKey(test.getBoard()))) {
                 frontier.add(test);
                 ++treeSize;
             }
@@ -81,7 +81,7 @@ public class AStar {
             moveLeft(state, x, y);
             BoardNode test = new BoardNode(state, bn);
 
-            if(!explored.containsKey(makeKey(test.getBoard()))) {
+            if(!explored.contains(makeKey(test.getBoard()))) {
                 frontier.add(test);
                 ++treeSize;
             }
@@ -93,7 +93,7 @@ public class AStar {
             moveDown(state, x, y);
             BoardNode test = new BoardNode(state, bn);
 
-            if(!explored.containsKey(makeKey(test.getBoard()))) {
+            if(!explored.contains(makeKey(test.getBoard()))) {
                 frontier.add(test);
                 ++treeSize;
             }
@@ -105,7 +105,7 @@ public class AStar {
             moveUp(state, x, y);
             BoardNode test = new BoardNode(state, bn);
 
-            if(!explored.containsKey(makeKey(test.getBoard()))) {
+            if(!explored.contains(makeKey(test.getBoard()))) {
                 frontier.add(test);
                 ++treeSize;
             }
@@ -113,28 +113,28 @@ public class AStar {
     }
 
     //THESE METHODS MOVE THE BLANK AROUND THE BOARD
-    public void moveUp(int[][] arr, int x, int y){
+    private void moveUp(int[][] arr, int x, int y){
         arr[x][y] = arr[x - 1][y];
         arr[x - 1][y] = 0;
     }
 
-    public void moveDown(int[][] arr, int x, int y){
+    private void moveDown(int[][] arr, int x, int y){
         arr[x][y] = arr[x + 1][y];
         arr[x + 1][y] = 0;
     }
 
-    public void moveLeft(int[][] arr, int x, int y){
+    private void moveLeft(int[][] arr, int x, int y){
         arr[x][y] = arr[x][y - 1];
         arr[x][y - 1] = 0;
     }
 
-    public void moveRight(int[][] arr, int x, int y){
+    private void moveRight(int[][] arr, int x, int y){
         arr[x][y] = arr[x][y + 1];
         arr[x][y + 1] = 0;
     }
 
     //CREATING THE KEY FOR STORING SEQUENCE OF 2D ARRAY IN HASHMAP
-    public static String makeKey(int[][] arr){
+    private static String makeKey(int[][] arr){
         String str = "";
 
         for(int i = 0; i < 3; ++i){
@@ -152,7 +152,7 @@ public class AStar {
     }
 
     //AUXILIARY METHOD FOR CREATING A COPY OF THE BOARD
-    public int[][] copy(int[][] arr){
+    private int[][] copy(int[][] arr){
         int[][] copied = new int[3][3];
 
         for(int i = 0; i < 3; ++i){
@@ -185,7 +185,8 @@ public class AStar {
                 break;
             }else{
                 BoardNode temp = frontier.remove();
-                explored.put(makeKey(temp.getBoard()), temp.getBoard());
+                //explored.put(makeKey(temp.getBoard()), temp.getBoard());
+                explored.add(makeKey(temp.getBoard()));
                 getMoves(temp);
             }
         }
@@ -205,14 +206,15 @@ public class AStar {
                 break;
             }else{
                 BoardNode temp = frontier.remove();
-                explored.put(makeKey(temp.getBoard()), temp.getBoard());
+                //explored.put(makeKey(temp.getBoard()), temp.getBoard());
+                explored.add(makeKey(temp.getBoard()));
                 getMoves(temp);
             }
         }
     }
 
     //TRACES THE ANCESTRY OF THE GOAL NODE AND STORES THIS PATH IN AN ARRAY LIST
-    public void trace(BoardNode n){
+    private void trace(BoardNode n){
         BoardNode step = n;
 
         while(step != null){
@@ -222,7 +224,7 @@ public class AStar {
     }
 
     //ITERATES THROUGH THE SOLUTION PATH TO PRINT EACH BOARD CONFIGURATION
-    public void displaySolution(){
+    private void displaySolution(){
         Collections.reverse(path);
 
         for(int i = 0; i < path.size(); ++i){

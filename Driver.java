@@ -93,7 +93,7 @@ public class Driver {
 
         long start = 0, stop = 0;
 
-        //SOLVING 100 TEST CASES AT DEPTH D = 2
+        //SOLVING 200 TEST CASES AT DEPTHS 2 - 20 (EVEN INTERVALS)
         for(int i = 0; i < 2000; ++i){
             AStar a = new AStar(h1_Cases.get(i), false);
 

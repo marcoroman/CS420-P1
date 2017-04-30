@@ -84,7 +84,7 @@ public class BoardNode {
         return parent;
     }
 
-    //RETURNING VALUE OF FIRST HEURISTIC FUNCTION H1(N)
+    //RETURNING VALUE OF HEURISTIC FUNCTION H(N)
     public int getH(){
         return h;
     }
