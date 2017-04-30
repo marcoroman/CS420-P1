@@ -52,11 +52,9 @@ public class Driver {
                 if(op == 1){
                     AStar alg = new AStar(puzzle.getPuzzle(), false);
                     alg.solve();
-                    System.out.println(alg.getTreeSize());
                 }else if(op == 2){
                     AStar alg = new AStar(puzzle.getPuzzle(), true);
                     alg.solve();
-                    System.out.println(alg.getTreeSize());
                 }else if(op == 3){
                     break;
                 }else{
@@ -71,11 +69,13 @@ public class Driver {
     //THIS PART OF THE PROGRAM HANDLES TESTING 100 TEST CASES AT DEPTHS STARTING FROM
     //2 AND INCREMENTING BY 2 UNTIL 20.
     public static void test() throws FileNotFoundException{
-        File file = new File("cases.txt");
+        File file = new File("cases2.txt");
         Scanner r = new Scanner(file);
         String line;
         int[] sizesH1 = new int[10];
         int[] sizesH2 = new int[10];
+        long[] timeH1 = new long[10];
+        long[] timeH2 = new long[10];
 
         //SEPARATE ARRAY LISTS STORE THE DIFFERENT HEURISTIC SOLUTIONS
         ArrayList<int[][]> h1_Cases = new ArrayList<>();
@@ -91,18 +91,41 @@ public class Driver {
             }
         }
 
+        long start = 0, stop = 0;
+
         //SOLVING 100 TEST CASES AT DEPTH D = 2
-        for(int i = 0; i < 1000; ++i){
+        for(int i = 0; i < 2000; ++i){
             AStar a = new AStar(h1_Cases.get(i), false);
+
+            start = System.currentTimeMillis();
             a.solveTest();
-            sizesH1[i / 100] += a.getTreeSize();
+            stop = System.currentTimeMillis();
+
+            sizesH1[i / 200] += a.getTreeSize();
+            timeH1[i / 200] += stop - start;
+
             AStar a2 = new AStar(h2_Cases.get(i), true);
+
+            start = System.currentTimeMillis();
             a2.solveTest();
-            sizesH2[i / 100] += a2.getTreeSize();
+            stop = System.currentTimeMillis();
+
+            sizesH2[i / 200] += a2.getTreeSize();
+            timeH2[i / 200] += stop - start;
         }
 
-        System.out.println(Arrays.toString(sizesH1));
-        System.out.println(Arrays.toString(sizesH2));
+        for(int i = 0; i < sizesH1.length; ++i){
+            sizesH1[i] /= 200;
+            sizesH2[i] /= 200;
+        }
+
+        System.out.printf("%-20s%-50s\n", "Heuristic 1 Depths: ", " 2, 4, 6, 8, 10, 12, 14, 16, 18, 20");
+        System.out.printf("%-20s%-50s\n", "Nodes generated: ", Arrays.toString(sizesH1));
+        System.out.printf("%-20s%-50s\n", "Time: ", Arrays.toString(timeH1));
+
+        System.out.printf("\n%-20s%-50s\n", "Heuristic 2 Depths: ", " 2, 4, 6, 8, 10, 12, 14, 16, 18, 20");
+        System.out.printf("%-20s%-50s\n", "Nodes generated: ", Arrays.toString(sizesH2));
+        System.out.printf("%-20s%-50s\n", "Time: ", Arrays.toString(timeH2));
     }
 
     //CREATES A 2D ARRAY FROM A STRING OF NUMBERS
