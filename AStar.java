@@ -75,17 +75,8 @@ public class AStar {
         frontier.add(root);
         ++treeSize;
 
-        //INITIALIZES GOAL POSITIONS FOR NUMBERS ONLY IN THE CASE OF THE SECOND HEURISTIC
-        if(selectH) {
-            for (int i = 0; i < 3; ++i) {
-                for (int j = 0; j < 3; ++j) {
-                    int[] arr = new int[2];
-                    arr[0] = i;
-                    arr[1] = j;
-                    goalH2.add(arr);
-                }
-            }
-        }
+        if(selectH)
+            useH2();
 
         long start = System.currentTimeMillis();
 
@@ -248,5 +239,17 @@ public class AStar {
         frontier.clear();
         explored.clear();
         path.clear();
+    }
+
+    //INITIALIZES GOAL POSITIONS FOR NUMBERS ONLY IN THE CASE OF THE SECOND HEURISTIC
+    private void useH2(){
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) {
+                int[] arr = new int[2];
+                arr[0] = i;
+                arr[1] = j;
+                goalH2.add(arr);
+            }
+        }
     }
 }
