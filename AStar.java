@@ -18,27 +18,21 @@ public class AStar {
     private HashSet<String> explored = new HashSet<>();
     static ArrayList<int[]> goalH2 = new ArrayList<>();
     private static boolean selectH;
-    private static boolean testing;
     private final String GOAL_KEY = "012345678";
     private ArrayList<BoardNode> path = new ArrayList<>();
     private static int treeSize;
-    private static long time;
 
     //CONSTRUCTOR INSTANTIATES MANHATTAN DISTANCES IF BOOLEAN = TRUE AND SETS ROOT NODE FOR SEARCH
     //IF BOOLEAN IS FALSE, # OF MISPLACED TILES IS USED
     public AStar(int[][] a){
 
         selectH = false;
-        testing = false;
         treeSize = 0;
 
         root = new BoardNode(a);
     }
 
     //************************************MUTATORS & ACCESSORS************************************
-
-    //BOOLEAN VALUE THAT ACTS AS A SWITCH TO INDICATE WHETHER TEST CASES ARE BEING RUN
-    public void isTesting(boolean b){testing = b;}
 
     //BOOLEAN VALUE THAT ACTS AS A SWITCH TO INDICATE WHICH HEURISTIC IS BEING USED
     //FALSE = H1, TRUE = H2
@@ -49,11 +43,6 @@ public class AStar {
     //ACCESSED BY BOARDNODE TO DETERMINE WHICH HEURISTIC TO USE
     public static boolean getH(){
         return selectH;
-    }
-
-    //RETURNS EXECUTION TIME OF A* SEARCH (FOR TESTING)
-    public static long getTime(){
-        return time;
     }
 
     //RETURNS SIZE OF THE SEARCH TREE
@@ -78,20 +67,13 @@ public class AStar {
         if(selectH)
             useH2();
 
-        long start = System.currentTimeMillis();
-
         //A* SEARCH
         while(!frontier.isEmpty()){
             if(makeKey(frontier.peek().getBoard()).equals(GOAL_KEY)){
                 BoardNode success = frontier.peek();
 
-                long stop = System.currentTimeMillis();
-                time  = stop - start;
-
-                if(!testing) {
-                    trace(success);
-                    displaySolution();
-                }
+                trace(success);
+                displaySolution();
                 break;
             }else{
                 BoardNode temp = frontier.remove();
