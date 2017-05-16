@@ -14,7 +14,7 @@ public class Driver {
 
         //ALLOWS THE USER TO CREATE A PUZZLE RANDOMLY OR MANUALLY THEN CHECKS IF IT IS SOLVABLE
         while(option != 3){
-            System.out.print("\n8-Puzzle Solver\n1) Randomly generate puzzle\n2) Manually create puzzle\n3) Run test cases\n4) Exit\n>");
+            System.out.print("\n8-Puzzle Solver\n1) Randomly generate puzzle\n2) Manually create puzzle\n3) Exit\n>");
             option = reader.nextInt();
 
             if(option == 1){

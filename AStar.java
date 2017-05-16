@@ -32,7 +32,7 @@ public class AStar {
         root = new BoardNode(a);
     }
 
-    //************************************MUTATORS & ACCESSORS************************************
+    /************************************MUTATORS & ACCESSORS************************************/
 
     //BOOLEAN VALUE THAT ACTS AS A SWITCH TO INDICATE WHICH HEURISTIC IS BEING USED
     //FALSE = H1, TRUE = H2
@@ -55,7 +55,7 @@ public class AStar {
         return goalH2;
     }
 
-    //************************************A* METHODS************************************
+    /************************************A* METHODS************************************/
 
     //MAIN A* ALGORITHM LOOP
     public void solve(){
@@ -168,7 +168,7 @@ public class AStar {
         arr[x][y + 1] = 0;
     }
 
-    //************************************AUXILIARY METHODS************************************
+    /************************************AUXILIARY METHODS************************************/
 
     //CREATING THE KEY FOR STORING SEQUENCE OF 2D ARRAY IN HASHSET
     private static String makeKey(int[][] arr){

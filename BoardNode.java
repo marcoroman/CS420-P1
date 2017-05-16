@@ -14,7 +14,7 @@ public class BoardNode {
 
     ArrayList<int[]> goalH2 = new ArrayList<>();
 
-    //*******************************CONSTRUCTORS*******************************
+    /*******************************CONSTRUCTORS*******************************/
 
     //CONSTRUCTOR FOR ROOT NODE
     public BoardNode(int[][] b){
@@ -48,7 +48,7 @@ public class BoardNode {
         f = g + h;
     }
 
-    //*******************************MUTATORS***********************************
+    /*******************************MUTATORS***********************************/
 
     public void setParent(BoardNode p){
         parent = p;
@@ -74,7 +74,7 @@ public class BoardNode {
         }
     }
 
-    //********************************ACCESSORS**********************************
+    /********************************ACCESSORS**********************************/
 
     public int[][] getBoard(){
         return board;
